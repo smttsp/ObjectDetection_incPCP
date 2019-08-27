@@ -12,5 +12,6 @@ We built our updates on it. Some of the things we have done are as follows:
 1. Stabilizating the videos
 2. Depth estimation
 3. Object Separation
-4. Coloring the objects
-
+4. Eroding, Dilation
+5. Adding Bounding box, removing inner boxes
+6. Coloring the objects
