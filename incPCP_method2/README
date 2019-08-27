@@ -1,0 +1,165 @@
+amFastPCP - Alternating Minimization Fast Principal Component Pursuit
+=====================================================================
+
+incAMFastPCP is a collection of Matlab routines to duplicate the 
+computational results of [1,2,3], which presents an novel and fully incremental 
+PCP algorithm for Video Background Modeling: it process one frame at a time, 
+obtaining similar results than classical (batch) PCP algorithms, it can track 
+changes of the background (low rank subspace tracking), it has an 
+extremely low memory footprint and a computational complexity that allows 
+real-time processing of high-definition videos.
+
+Moreover the incAMFastPCP algorithm is robust to translational and rotational 
+jitter.
+
+In order to run the simulation(s), please read the "Using incAMFastPCP" 
+section. For authors and legal information, please refer to the 
+"Authors" and "Legal" sections respectively.
+
+
+[1] Paul Rodríguez, Brendt Wohlberg, "A Matlab Implementation of a Fast 
+Incremental Principal Component Pursuit Algorithm for Video Background Modeling", 
+IEEE International Conference on Image Processing (ICIP), (Paris, France), 
+pp. 3414--3416, October, 2014.
+
+[2] P. Rodriguez, B. Wohlberg, "Incremental Principal Component Pursuit for Video 
+Background Modeling", submitted Journal of Mathematical Imaging and Vision, 2014
+
+[3] Paul Rodriguez, Brendt Wohlberg, "Translational and Rotational Jitter Invariant 
+Incremental Principal Component Pursuit for Video Background Modelin", accepted 
+IEEE International Conference on Image Processing (ICIP), (Quebec, Canada), 
+September, 2015. 
+
+
+Other related work
+
+[4] P. Rodriguez, B. Wohlberg, "Fast Principal Component Pursuit via
+Alternating Minimization", 2013 IEEE International Conference 
+on Image Processing (ICIP'13), Melbourne, Australia, pp. 69-73, Sep. 2013
+
+[5] P. Rodriguez, B. Wohlberg, "Video Background Modeling Under Impulse 
+Noise", 2014 IEEE International Conference on Image 
+Processing (ICIP'14), Paris, France, pp. 1041-1045, Oct. 2014
+
+
+Using incAMFastPCP
+===================
+
+Version 1.0 (related to [2,3])
+------------------------------
+
+If you are reading this file, then you have unzip the incAMFastPCP.zip
+file into some local directory; we will refer to this directory as DIR.
+
+Before running any script, some extra files must be downloaded:
+
+* Datasets: download it from 
+
+  lank3-rgb640x480:  http://www.dropbox.com/l/U2LRrrFPyzrd16WFmJrDCp?
+  lobby:	         http://www.dropbox.com/l/HzpRNdFUyNbAIpUdz7ASYo?
+  neovison-Tower3    https://www.dropbox.com/l/ZX3CIujubUBfGfqDmELi2t?
+
+  lank3-rgb640x480: 640 x 480 traffic (color) video of 400 frames @ 15 fps.
+  lobby: 240 x 160 color video of a lobby (lights on/off) 1546 frames @ 25 fps.
+  neovison-Tower3: 1920 x 1088 color video of 900 frames @ 25 fps.
+
+Once all the extra files are downloaded, "cd" to DIR and uncompress the 
+datasets.
+  
+Up to this point, you are ready to go, and you only need to type
+
+>>> myFlags = incAMFastPCPinputPars('default'); myFlags.showFlag = 1;
+>>> incrementalPCP(dataset-dir,  1, 3, 30, myFlags);
+
+in the matlab command window, where dataset-dir is the path to one of
+the directories containing a dataset.
+
+For other options, see the incrementalPCP.m file
+
+
+Version 2.0 (related to [1])
+----------------------------
+
+* Datasets: download it from
+  V352:  http://www.dropbox.com/l/U2LRrrFPyzrd16WFmJrDCp?
+  V640:  http://www.dropbox.com/l/HzpRNdFUyNbAIpUdz7ASYo?
+  V1280 http://www.dropbox.com/l/ZX3CIujubUBfGfqDmELi2t?
+
+  V352:   352 x 244 color video (shot from a sidewalk surveillance camera) of 1200 frames @ 25 fps.
+  V640:   640 x 480 traffic color video (synthetically jittered) of 400 frames @ 15 fps.
+  V1280: 1280 x 728 color video (shot from a UAV) of 408 frames @ 6 fps.
+
+Once all the extra files are downloaded, "cd" to DIR and uncompressed the datasets.
+
+Up to this point, you are ready to go. For example
+
+* V352 case:
+
+  >>> myPars = incAMFastPCPinputPars('TI_search'); myPars.baseTras = 20;
+  >>> incrementalPCP('sidewalk/', 1, 2, 200, myPars);
+
+* V640 case:
+
+  >>> myPars = incAMFastPCPinputPars('TI_search'); myPars.baseTras = 15;
+  >>> incrementalPCP('lank3-640x480_T10-A05/', 1, 2, 200, myPars);
+
+* V1280 case:
+
+  >>> myPars = incAMFastPCPinputPars('TI_search'); myPars.baseTras = 45; myPars.baseAlpha=8;
+  >>> incrementalPCP('uav-1280x728/', 1, 2, 200, myPars);
+
+in the Matlab command window, where the first argument is the path to one of the directories 
+containing a dataset.
+
+For other options, read the README and incrementalPCP.m files
+
+
+Version 3.0 (related to [1,2,3])
+--------------------------------
+
+This version can take advantege of GPU-enabled Matlab functions, delivering a 3x ~ 4x performance 
+improvement. To activate the GPU-enabled Matlab functions add "myPars.cudaFlag = 1;" when calling
+the incrementalPCP.m file, e.g.
+
+* Fixed camera case:
+
+  >>> myFlags = incAMFastPCPinputPars('default'); myFlags.showFlag = 1; myPars.cudaFlag = 1;
+  >>> incrementalPCP(dataset-dir, 1, 2, 200, myPars);
+
+* Jittered video case:
+
+  >>> myPars = incAMFastPCPinputPars('TI_search'); myPars.baseTras = 15; myPars.cudaFlag = 1;
+  >>> incrementalPCP(dataset-dir, 1, 2, 200, myPars);
+
+where dataset-dir is the path to one of the directories containing a dataset.
+
+
+Authors
+=======
+
+Paul Rodriguez   prodrig@pucp.pe
+Brendt Wohlberg  brendt@lanl.gov
+
+
+
+Legal
+=====
+
+There is currently a patent pending that covers the incremental PCP method and 
+applications that is implemented in this source code; this specifically refers
+to the file 'incrementalPCP.m'.
+  
+For non-commercial or academic use the source code 'incrementalPCP.m' can be  
+distributed and/or modified under the terms of the GNU Lesser General Public 
+License (LGPL) version 3 as published by the Free Software Foundation 
+(http://opensource.org/licenses/lgpl-3.0.html).
+
+For other usage (of 'incrementalPCP.m'), please contact the authors.
+
+The source code of all other m-file (but 'incrementalPCP.m') are free software; you 
+can redistribute them and/or modify them under the terms of the GNU Lesser General 
+Public License (LGPL) version 3 as published by the Free Software Foundation
+(http://opensource.org/licenses/lgpl-3.0.html).
+
+
+
